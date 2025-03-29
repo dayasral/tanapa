@@ -13,15 +13,21 @@
         - samba
       state: latest
     when: ansible_distribution == "Astra Linux"
-  
-  - name: tipo copy html
+   
+  - name: change html
     tags: apache
-    copy:
-      src: site.html
-      dest: /var/www/html/index.html
-      owner: root
-      group: root
-      mode: 0644
+    linefile:
+      path: /var/www/html/index.html
+      regexp: '^ansible'
+      line: ansible bloomb
+    register: bloomb
+   
+  - name: restart apache
+    targs: apache
+    service:
+      name: apache2
+      state: restarted
+    when: bloomb.changed
 
 - hosts: db
   become: true
@@ -30,5 +36,25 @@
   - name: tipo install db
     tags: mariadb
     apt:
+      name:
+        - mariadb-server
       state: latest
     when: ansible_distribution == "Astra Linux"
+
+- hosts: workstation
+  become: true
+  tasks:
+
+  - name: install unzip
+    package:
+      name: unzip
+
+  - name: install terraform
+    unarchive:
+      src: https://releases.hashicorp.com/terraform/1.11.3/terraform_1.11.3_linux_amd64.zip
+      dest: /usr/local/bin
+      remote_src: yes
+      mode: 0755
+      owner: root
+      group: root
+
