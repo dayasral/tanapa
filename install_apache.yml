@@ -1,0 +1,19 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+  
+  - name: tipo update repo
+    apt:
+      update_cache: yes
+  
+  - name: tipo install apache2
+    apt:
+      name: apache2
+      state: latest
+  
+  - name: tipo add php
+    apt:
+      name: libapache2-mod-php
+      state: latest
