@@ -1,19 +1,34 @@
 ---
 
-- hosts: all
+- hosts: web
   become: true
   tasks:
   
-  - name: tipo update repo
+  - name: tipo install apache samba
+    tags: apache,samba
     apt:
-      update_cache: yes
-  
-  - name: tipo install apache2
-    apt:
-      name: apache2
+      name:
+        - apache2
+        - libapache2-mod-php
+        - samba
       state: latest
+    when: ansible_distribution == "Astra Linux"
   
-  - name: tipo add php
+  - name: tipo copy html
+    tags: apache
+    copy:
+      src: site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
+
+- hosts: db
+  become: true
+  tasks:
+
+  - name: tipo install db
+    tags: mariadb
     apt:
-      name: libapache2-mod-php
       state: latest
+    when: ansible_distribution == "Astra Linux"
