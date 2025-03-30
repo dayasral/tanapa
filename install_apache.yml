@@ -1,60 +1,17 @@
 ---
 
+- hosts: all
+  become: true
+  roles:
+    - base
+
 - hosts: web
   become: true
-  tasks:
-  
-  - name: tipo install apache samba
-    tags: apache,samba
-    apt:
-      name:
-        - apache2
-        - libapache2-mod-php
-        - samba
-      state: latest
-    when: ansible_distribution == "Astra Linux"
-   
-  - name: change html
-    tags: apache
-    linefile:
-      path: /var/www/html/index.html
-      regexp: '^ansible'
-      line: ansible bloomb
-    register: bloomb
-   
-  - name: restart apache
-    targs: apache
-    service:
-      name: apache2
-      state: restarted
-    when: bloomb.changed
+  roles:
+    - web
 
 - hosts: db
   become: true
-  tasks:
-
-  - name: tipo install db
-    tags: mariadb
-    apt:
-      name:
-        - mariadb-server
-      state: latest
-    when: ansible_distribution == "Astra Linux"
-
-- hosts: workstation
-  become: true
-  tasks:
-
-  - name: install unzip
-    package:
-      name: unzip
-
-  - name: install terraform
-    unarchive:
-      src: https://releases.hashicorp.com/terraform/1.11.3/terraform_1.11.3_linux_amd64.zip
-      dest: /usr/local/bin
-      remote_src: yes
-      mode: 0755
-      owner: root
-      group: root
+  roles:
+    - db
 

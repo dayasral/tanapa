@@ -1,0 +1,7 @@
+- name: tipo install db
+  tags: mariadb
+  apt:
+    name:
+      - mariadb-server
+    state: latest
+  when: ansible_distribution == "Astra Linux"

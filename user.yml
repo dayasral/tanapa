@@ -1,0 +1,27 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+  
+  - name: tipo create user 
+    tags: always
+    user:
+      name: bender
+      groups: root
+
+  - name: tipo add key
+    tags: always
+    authorized_key:
+      user: bender
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFh3khbsyWE69aGsRJVRWUyLqNR8sKRV0NkESIrNOLG9 ansible"
+
+  - name: tipo sudo
+    tags: always
+    copy:
+      src: sudoer_bender
+      dest: /etc/sudoers.d/bender
+      owner: root
+      group: root
+      mode: 0440
+
